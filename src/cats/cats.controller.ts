@@ -19,6 +19,8 @@ import {
 } from '@nestjs/common';
 import { PositiveIntPipe } from 'src/common/pipes/positiveInt.pipe';
 import { CatRequestDto } from './dto/cats.request.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ReadOnlyCatDto } from './dto/cat.dto';
 
 @Controller('cats')
 @UseInterceptors(RunningTimeInterceptor, SuccessInterceptor)
@@ -26,11 +28,22 @@ import { CatRequestDto } from './dto/cats.request.dto';
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
+  @ApiOperation({ summary: '회원가입' })
+  @ApiResponse({
+    status: 201,
+    description: '성공',
+    type: ReadOnlyCatDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'server error',
+  })
   @Post()
   async signUp(@Body() body: CatRequestDto) {
     return await this.catsService.signUp(body);
   }
 
+  @ApiOperation({ summary: '고양이 전부 가져오기' })
   @Get()
   @UseFilters(HttpExceptionFilter)
   getAllCat() {
@@ -42,16 +55,12 @@ export class CatsController {
     return 'all cat';
   }
 
+  @ApiOperation({ summary: '특정 고양이 가져오기' })
   @Get(':id')
   getOneCat(@Param('id', ParseIntPipe, PositiveIntPipe) param: number) {
     console.log(param);
     console.log(typeof param);
     return 'one cat';
-  }
-
-  @Post()
-  createCat() {
-    return 'create cat';
   }
 
   @Put(':id')
@@ -69,6 +78,7 @@ export class CatsController {
     return 'delete cat';
   }
 
+  @ApiOperation({ summary: '고양이 이미지 업로드' })
   @Post('upload/cats')
   uploadCatImage() {
     return 'upload image';
