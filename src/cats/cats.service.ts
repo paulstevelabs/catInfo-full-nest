@@ -25,6 +25,11 @@ export class CatsService {
       password: hashedPassword,
     });
 
-    return cat;
+    // return {
+    //   id: cat.id,
+    //   email: cat.email,
+    //   name: cat.name,
+    // };
+    return cat.readOnlyData;
   }
 }
