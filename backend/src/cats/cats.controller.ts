@@ -1,5 +1,5 @@
-import { RunningTimeInterceptor } from './../common/interceptors/runningTime.interceptor';
-import { SuccessInterceptor } from './../common/interceptors/success.interceptor';
+import { RunningTimeInterceptor } from '../common/interceptors/runningTime.interceptor';
+import { SuccessInterceptor } from '../common/interceptors/success.interceptor';
 import { HttpExceptionFilter } from '../common/exceptions/http-exception.filter';
 import { CatsService } from './cats.service';
 import {
