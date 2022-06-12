@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { CatsModule } from './cats/cats.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module';
     CatsModule,
     UsersModule,
     MongooseModule.forRoot(process.env.MONGO_URL),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

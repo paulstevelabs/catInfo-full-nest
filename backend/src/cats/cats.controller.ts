@@ -1,3 +1,5 @@
+import { LoginRequestDto } from './../auth/dto/login.request.dto';
+import { AuthService } from './../auth/auth.service';
 import { RunningTimeInterceptor } from '../common/interceptors/runningTime.interceptor';
 import { SuccessInterceptor } from '../common/interceptors/success.interceptor';
 import { HttpExceptionFilter } from '../common/exceptions/http-exception.filter';
@@ -26,7 +28,10 @@ import { ReadOnlyCatDto } from './dto/cat.dto';
 @UseInterceptors(RunningTimeInterceptor, SuccessInterceptor)
 @UseFilters(HttpExceptionFilter)
 export class CatsController {
-  constructor(private readonly catsService: CatsService) {}
+  constructor(
+    private readonly catsService: CatsService,
+    private readonly authService: AuthService,
+  ) {}
 
   @ApiOperation({ summary: '회원가입' })
   @ApiResponse({
@@ -61,6 +66,12 @@ export class CatsController {
     console.log(param);
     console.log(typeof param);
     return 'one cat';
+  }
+
+  @ApiOperation({ summary: '로그인' })
+  @Post('login')
+  logIn(@Body() data: LoginRequestDto) {
+    return this.authService.jwtLogin(data);
   }
 
   @Put(':id')
