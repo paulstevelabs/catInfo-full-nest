@@ -1,3 +1,6 @@
+import { Cat } from './cats.schema';
+import { CurrentUser } from './../common/decorators/user.decorator';
+import { JwtAuthGuard } from './../auth/jwt/jwt.guard';
 import { LoginRequestDto } from './../auth/dto/login.request.dto';
 import { AuthService } from './../auth/auth.service';
 import { RunningTimeInterceptor } from '../common/interceptors/runningTime.interceptor';
@@ -17,6 +20,7 @@ import {
   Post,
   Put,
   UseFilters,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { PositiveIntPipe } from 'src/common/pipes/positiveInt.pipe';
@@ -46,6 +50,13 @@ export class CatsController {
   @Post()
   async signUp(@Body() body: CatRequestDto) {
     return await this.catsService.signUp(body);
+  }
+
+  @ApiOperation({ summary: '현재 고양이 가져오기' })
+  @UseGuards(JwtAuthGuard)
+  @Get('current')
+  getCurrentCat(@CurrentUser() cat: Cat) {
+    return cat.readOnlyData; // req.uest
   }
 
   @ApiOperation({ summary: '고양이 전부 가져오기' })
