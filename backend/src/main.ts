@@ -3,12 +3,21 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import * as expressBasicAuth from 'express-basic-auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe()); // class validator
 
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.use(
+    ['/docs', '/docs-json'],
+    expressBasicAuth({
+      challenge: true,
+      users: { [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD },
+    }),
+  );
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Cat info')

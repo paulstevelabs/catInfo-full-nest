@@ -54,21 +54,21 @@ export class CatsController {
 
   @ApiOperation({ summary: '현재 고양이 가져오기' })
   @UseGuards(JwtAuthGuard)
-  @Get('current')
+  @Get()
   getCurrentCat(@CurrentUser() cat: Cat) {
     return cat.readOnlyData; // req.uest
   }
 
   @ApiOperation({ summary: '고양이 전부 가져오기' })
-  @Get()
+  @Get('all')
   @UseFilters(HttpExceptionFilter)
   getAllCat() {
-    throw new HttpException(
-      { errorCode: 1001, message: 'myError' },
-      HttpStatus.FORBIDDEN,
-    );
+    // throw new HttpException(
+    //   { errorCode: 1001, message: 'myError' },
+    //   HttpStatus.FORBIDDEN,
+    // );
 
-    return 'all cat';
+    return [];
   }
 
   @ApiOperation({ summary: '특정 고양이 가져오기' })
