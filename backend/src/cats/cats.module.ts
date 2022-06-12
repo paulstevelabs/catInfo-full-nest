@@ -1,3 +1,4 @@
+import { CommentSchema, Comments } from './../comments/comments.schema';
 import { AuthModule } from './../auth/auth.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,7 +10,10 @@ import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Cat.name, schema: CatSchema }]),
+    MongooseModule.forFeature([
+      { name: Cat.name, schema: CatSchema },
+      { name: Comments.name, schema: CommentSchema },
+    ]),
     forwardRef(() => AuthModule),
     MulterModule.register({ dest: './upload' }),
   ],
