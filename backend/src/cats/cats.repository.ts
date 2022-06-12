@@ -23,4 +23,17 @@ export class CatsRepository {
   async findCatByEmail(email: string): Promise<Cat | null> {
     return await this.catModel.findOne({ email });
   }
+
+  async findByIdAndUpdateImage(catId: string, fileName: string) {
+    const cat = await this.catModel.findById(catId);
+    cat.imageUrl = `http://localhost:8000/media/${fileName}`;
+    const newCat = await cat.save();
+    console.log(newCat);
+
+    return newCat.readOnlyData;
+  }
+
+  async findAll() {
+    return await this.catModel.find();
+  }
 }

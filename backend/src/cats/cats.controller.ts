@@ -1,3 +1,4 @@
+import { multerOptions } from './../common/utils/multer.options';
 import { Cat } from './cats.schema';
 import { CurrentUser } from './../common/decorators/user.decorator';
 import { JwtAuthGuard } from './../auth/jwt/jwt.guard';
@@ -12,13 +13,12 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Put,
+  UploadedFiles,
   UseFilters,
   UseGuards,
   UseInterceptors,
@@ -27,6 +27,7 @@ import { PositiveIntPipe } from 'src/common/pipes/positiveInt.pipe';
 import { CatRequestDto } from './dto/cats.request.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ReadOnlyCatDto } from './dto/cat.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('cats')
 @UseInterceptors(RunningTimeInterceptor, SuccessInterceptor)
@@ -62,13 +63,13 @@ export class CatsController {
   @ApiOperation({ summary: '고양이 전부 가져오기' })
   @Get('all')
   @UseFilters(HttpExceptionFilter)
-  getAllCat() {
+  async getCats() {
     // throw new HttpException(
     //   { errorCode: 1001, message: 'myError' },
     //   HttpStatus.FORBIDDEN,
     // );
 
-    return [];
+    return await this.catsService.getCats();
   }
 
   @ApiOperation({ summary: '특정 고양이 가져오기' })
@@ -101,8 +102,13 @@ export class CatsController {
   }
 
   @ApiOperation({ summary: '고양이 이미지 업로드' })
-  @Post('upload/cats')
-  uploadCatImage() {
-    return 'upload image';
+  @UseInterceptors(FilesInterceptor('image', 10, multerOptions('cats')))
+  @UseGuards(JwtAuthGuard)
+  @Post('upload')
+  uploadCatImage(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @CurrentUser() cat: Cat,
+  ) {
+    return this.catsService.uploadImage(cat, files);
   }
 }
